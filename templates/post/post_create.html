@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+{% block title %}
+    생성 | {{ block.super }}
+{% endblock %}
+{% block content %}
+    <h3 style="text-align: center">글쓰기</h3>
+    <br>
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table>
+            {% bootstrap_form form %}
+        </table>
+        <input type="submit" value="제출">
+    </form>
+{% endblock %}

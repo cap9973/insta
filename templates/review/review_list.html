@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}
+    댓글삭제 |{{ block.super }}
+{% endblock %}
+{% block content %}
+
+    {% for object in object_list %}
+
+        {% if object.post_content_id|stringformat:"s" == post|stringformat:"s" %}
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">글: {{ object.post_content }}</h4>
+                    <br>
+                    <h5>댓글:</h5>
+                    <br>
+                    {{ object }}을 삭제하시겠습니까?
+                    <br>
+
+                    <br>
+                    <a href="{% url 'reviews:review_delete' pk=object.pk %}" class="btn btn-primary">삭제</a>
+                </div>
+
+                <div class="card-footer text-muted">
+                    {{ object.created_at }} | 생성
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+

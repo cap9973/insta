@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block title %}
+    {{ block.super }} | 홈
+{% endblock %}
+{% block content %}
+    {% load js %}
+
+    <div class="row">
+
+
+        {% for object in object_list %}
+
+            <div class="col-md-2"></div>
+            <div class="col-md-8" id="card">
+                <div class="card">
+                    {% if request.user.id == object.user_id.id %}
+                        <div class="dropdown">
+                            <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-bs-toggle="dropdown" aria-expanded="false" style="float: right">
+                                수정/삭제
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+                                <li><a class="dropdown-item" href="{% url 'posts:_update' pk=object.pk %}">수정</a>
+                                </li>
+                                <li><a class="dropdown-item" href="{% url 'posts:_delete' pk=object.pk %}">삭제</a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    {% endif %}
+
+
+
+
+                    {% if object.images %}
+                        <img class="card-img-top" src="{{ object.images.url }}" alt="로딩불가" style="width: 300px">
+                    {% endif %}
+
+
+
+                    <div class="card-body">
+                        <h6 class="card-title" style="text-align: center">{{ object.user_id.email }} 의 게시</h6>
+                        <br>
+                        <p class="card-text">
+                            {{ object.content }}
+                        </p>
+                        <br>
+                        <div>
+                            <button class="btn btn-info" id="{{ object.pk }}" onclick="post_like(this.id)">
+                                <!--좋아효 버튼을 만들어주기-->
+                                좋아요
+                                <span id="like_count_{{ object.pk }}">{{ object.like.count }}</span>
+                                <!--가 없어도 되지만! 처음에 0을 보여주기 위해 넣어줌!-->
+                            </button>
+
+                            <!-- toast message -->
+                            <div class='toast' style='display:none'>
+                                <div id="message"></div>
+                            </div>
+
+                            <script src="https://code.jquery.com/jquery-3.5.1.js"
+                                    integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+                                    crossorigin="anonymous"></script>
+                            <script type="text/javascript">
+
+
+                                function post_like(id) {
+
+                                    {#var a="{{ post_count }}"#}
+                                    {#var b=Number(a)#}
+                                    {#console.log(a)#}
+                                    {#for(i=0; i<b; i++){#}
+
+                                    $.ajax({
+                                        url: "{%url 'posts:likes'%}", // data를 전송할 url 입니다.
+                                        data: {
+                                            'blog_id': id
+                                        }, // post_id 라는 name으로 id 값 전송
+                                        dataType: "json",
+                                        success: function (response) { // ajax 통신이 정상적으로 완료되었을 때
+                                            var professionals = JSON.parse(response.like_count);
+                                            console.log(professionals)
+                                            console.log($('#like_count'))
+
+                                            $('#like_count_'+id).text(professionals) //id가 like_count의 내용을 전송받은 좋아요 수로 바꾼다
+                                            $('#message').html(response.message) //id가 message의 내용을 전송받은 message로 바꾼다
+                                            $('.toast').fadeIn(400).delay(100).fadeOut(400) //class가 toast인 것을 서서히 나타나게 하는 메서드입니다.
+                                        }
+                                    })
+                                }
+
+
+                            </script>
+
+
+                        </div>
+
+                        <br>
+                        <div>
+                            {% include   'review/review_contentlist.html' with content=object.content post=review_post %}
+                            <br>
+                        </div>
+                        {% if request.user.id %}
+                            <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                        data-bs-toggle="dropdown" aria-expanded="false"
+                                        style="float: right; background-color: DimGrey; border-color: DimGrey">
+                                    댓글달기
+                                </button>
+
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item"
+                                           href="{% url 'reviews:review_create' pk=object.pk %}">댓글달기</a>
+                                    </li>
+                                    <li><a class="dropdown-item"
+                                           href="{% url 'reviews:review_list' pk=object.pk %}">삭제</a></li>
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
+
+            </div>
+            <div class="col-md-2"></div>
+        {% endfor %}
+
+
+        <style type="text/css">
+
+
+            img {
+
+                display: block;
+
+                margin: auto;
+
+            }
+
+        </style>
+
+
+    </div>
+
+
+
+
+{% endblock %}

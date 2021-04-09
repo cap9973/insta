@@ -1,0 +1,27 @@
+{% for foo in post %}
+    {% load bootstrap5 %}
+    {% if foo.post_content|stringformat:"s" in content|stringformat:"s" %}
+        <div class="card">
+            <div class="card-body">
+                <h5>댓글</h5>
+                <ul>
+                    <li>내용: {{ foo }}</li>
+                </ul>
+                작성자-({{ foo.user_id }})
+            </div>
+        </div><br>
+        <style>
+            ul {
+                list-style: none;
+            }
+        </style>
+
+    {% endif %}
+{% endfor %}
+
+
+
+
+
+
+
